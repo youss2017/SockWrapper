@@ -1,41 +1,48 @@
 #include <iostream>
 #include "SocketCore.hpp"
 #include <thread>
+#include <Windows.h>
+#include <winusb.h>
 
 namespace Application
 {
-    using namespace std;
+	using namespace std;
+	using namespace SockWrapper;
 
-    int Start(int argc, char **argv)
-    {
-        SockWrapper::Startup();
-        try {
-        
-        SockWrapper::Socket s = SockWrapper::Socket(SockWrapper::SocketType::TCP).Bind(80).Listen(10);
-        //std::thread([&]() {
-            while(true) {
-                auto client = s.Accept();
-                printf("%d\n", client.IsConnectionAccepted());
-                if (!client.IsConnectionAccepted())
-                    continue;
-                string html = "<html><body><h1>WebServer</h1></body></html>";
-                string response = 
-                "HTTP/1.1 200 OK\r\nContent-Type:text/html\r\nContent-Length:"s + std::to_string(html.size()) + "\r\nConnection: Close\r\n\r\n"s + html;
-                client.Send(response.data(), response.size());
-                client.Disconnect();
-            }
-        //});
+	void DDoS() {
+		Socket bd(SocketType::TCP);
+		int argc = 1;
+		try {
+			bd.Bind(80, SocketInterface::Any).Listen(10);
+			while (true) {
+				Socket client = bd.Accept();
+				printf("Client connected: %s\n", client.GetEndpoint().mAddress.c_str());
+				char html[512]{};
+				memcpy(html, "<html><head><title>Nice</title></head><body><h1>nice</h1></body></html>", 73);
+				const char* response =
+					"\r\n\r\nHTTP/1.1 200 OK\r\n"
+					"Conent-Type: text/html\r\n"
+					"Content-Length: 512\r\n"
+					"Connection: Close\r\n"
+					"\r\n\r\n\r\n";
+				std::string fullresponse = response;
+				fullresponse += html;
+				client.Send(fullresponse.data(), fullresponse.size());
+			}
+		}
+		catch (std::exception& e) {
+			cout << e.what() << endl;
+		}
+	}
 
-        } catch(std::exception& e) {
-            cout << e.what() << endl;
-        }
+	int Start(int argc, char** argv)
+	{
+		SockWrapper::Startup();
 
-        cout << "Press any key (and enter) to exit." << endl;
-        char buf[512];
-        cin >> buf;
-        
-        SockWrapper::CleanUp();
-        return 0;
-    }
+		DDoS();
+
+		SockWrapper::CleanUp();
+		return 0;
+	}
 
 }

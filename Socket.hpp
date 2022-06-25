@@ -11,9 +11,25 @@ namespace SockWrapper
         RAW
     };
 
+    enum class SocketInterface {
+        // 127.*.*.* packets only from your computer
+        Loopback,
+        // local network and internet
+        Any,
+        // binds to all interfaces and transmits through all of them
+        // the best option for a server
+        Broadcast
+    };
+
     struct Endpoint {
         std::string mAddress;
         uint16_t mPort;
+
+        static Endpoint GetEndPoint(const std::string& address, uint16_t port) {
+            return { address, port };
+        }
+
+        static Endpoint GetEndPointBroadcast(uint16_t port);
     };
 
     class Socket
@@ -21,9 +37,15 @@ namespace SockWrapper
 
     public:
         Socket(SocketType type);
+        Socket(Socket&& move);
         ~Socket();
-        // Throws Exception on failure
-        Socket &Bind(uint16_t port);
+        /// <summary>
+        /// For more information on SocketInterface go to the enum class definition.
+        /// </summary>
+        /// <param name="port"></param>
+        /// <param name="interfaceType"></param>
+        /// <returns></returns>
+        Socket &Bind(uint16_t port, SocketInterface interfaceType);
         Socket &Listen(int nMaxBacklog);
         Socket &Connect(const std::string &address, uint16_t port);
 
@@ -42,12 +64,14 @@ namespace SockWrapper
 
         const Endpoint& GetEndpoint();
         bool IsConnectionAccepted();
+        bool IsConnected();
 
         // Proper Disconnection.
         Socket &Disconnect();
 
     private:
         Socket() {}
+        Socket(const Socket& copy) = delete;
         friend class SocketMultiplexing;
 
     private:

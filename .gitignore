@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+*.tlog
+*.enc
+*.idb
+*.pdb
+*.recipe
+*.ilk
+*.iobj
+*.ipdb
+/x64
