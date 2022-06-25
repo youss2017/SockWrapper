@@ -7,12 +7,12 @@ namespace Application
 	using namespace std;
 	using namespace SockWrapper;
 
-	int Start(int argc, char **argv)
+	int Start(int argc, char** argv)
 	{
 		SockWrapper::Startup();
 
 		Socket spam(SocketType::UDP);
-		spam.Bind(1500, SocketInterface::Broadcast);
+		spam.Bind(1500, SocketInterface::Any);
 		while (true)
 		{
 			char randomData[1024];
