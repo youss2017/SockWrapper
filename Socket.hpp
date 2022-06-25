@@ -16,8 +16,7 @@ namespace SockWrapper
         Loopback,
         // local network and internet
         Any,
-        // binds to all interfaces and transmits through all of them
-        // the best option for a server
+        // INADDR_BROADCAST
         Broadcast
     };
 
