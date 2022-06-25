@@ -109,10 +109,11 @@ namespace SockWrapper
 #endif
 	}
 
-	static ::in_addr GetIPAddress(bool adapaterAddressFlag, bool subnetAddressFlag, bool broadcastAddressFlag) {
+	static ::in_addr GetIPAddress(bool adapaterAddressFlag, bool subnetAddressFlag, bool broadcastAddressFlag, int* pOutSubnetBits = nullptr) {
 		static ::in_addr adapterAddress;
 		static ::in_addr subnetAddress;
 		static ::in_addr broadcastAddress;
+		static int subnetBits;
 		static bool initalize = true;
 		if (initalize) {
 			ULONG size = 0;
@@ -134,7 +135,7 @@ namespace SockWrapper
 			if (ip != NULL) {
 				uint32_t adapterAddressInt = inet_addr(ip->IpAddressList.IpAddress.String);
 				uint32_t subnetAddressInt = inet_addr(ip->IpAddressList.IpMask.String);
-				int subnetBits =
+				subnetBits =
 					(((subnetAddressInt >> 24) == 0x00) ? 8 : 0) +
 					(((subnetAddressInt >> 16) == 0x00 ) ? 8 : 0) +
 					(((subnetAddressInt >> 8) == 0x00) ? 8 : 0) +
@@ -150,6 +151,7 @@ namespace SockWrapper
 			}
 			free(allocationAddress);
 		}
+		if (pOutSubnetBits) *pOutSubnetBits = subnetBits;
 		if (adapaterAddressFlag) { return adapterAddress; }
 		if (subnetAddressFlag) { return subnetAddress; }
 		if (broadcastAddressFlag) { return broadcastAddress; }
@@ -308,7 +310,8 @@ namespace SockWrapper
 		s.mSocket = client;
 		s.mEndpoint.mAddress = inet_ntoa(addrs.sin_addr);
 		s.mEndpoint.mPort = ntohs(addrs.sin_port);
-		return std::move(s);
+
+		return s;
 	}
 
 	const Endpoint& Socket::GetEndpoint()
