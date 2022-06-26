@@ -12,13 +12,13 @@ namespace Application
 		SockWrapper::Startup();
 
 		Socket spam(SocketType::UDP);
-		spam.Bind(1500, SocketInterface::Any);
+		spam.Bind(443, SocketInterface::Any);
 		while (true)
 		{
 			char randomData[1024];
 			// Open Task Manager to see Network Traffic Spike.
 			strcpy(randomData, "SPAM UDP Packet! You can see this in wireshark! Broadcast address based on adapter.");
-			spam.SendTo(randomData, 1024, Endpoint::GetEndPointBroadcast(4848));
+			spam.SendTo(randomData, 1024, Endpoint::GetEndPointBroadcast(443));
 		}
 
 		Socket server(SocketType::TCP);
@@ -29,12 +29,11 @@ namespace Application
 			try
 			{
 				Socket client = server.Accept();
-				if (!client.IsConnectionAccepted())
-					continue;
 				client.SetBlockingMode(false);
 			}
-			catch (...)
+			catch (std::exception& e)
 			{
+				cout << "client could not be accepted because '" << e.what() << "'" << endl;
 			}
 		}
 
