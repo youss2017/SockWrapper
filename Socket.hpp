@@ -16,7 +16,8 @@ namespace SockWrapper
         Loopback,
         // local network and internet
         Any,
-        // INADDR_BROADCAST
+        // binds to all interfaces and transmits through all of them
+        // the best option for a server
         Broadcast
     };
 
@@ -62,7 +63,6 @@ namespace SockWrapper
         Socket Accept();
 
         const Endpoint& GetEndpoint();
-        bool IsConnectionAccepted();
         bool IsConnected();
 
         // Proper Disconnection.
@@ -74,7 +74,6 @@ namespace SockWrapper
         friend class SocketMultiplexing;
 
     private:
-        bool mAccepted;
         uint64_t mSocket;
         SocketType mType;
         Endpoint mEndpoint;
