@@ -87,17 +87,7 @@ namespace SockWrapper
 			Socket_ThrowException();
 	}
 
-	Socket::Socket(Socket&& move)
-	{
-		if (this == &move)
-			return;
-		this->mEndpoint = move.mEndpoint;
-		this->mSocket = move.mSocket;
-		this->mType = move.mType;
-		move.mSocket = -1;
-	}
-
-	Socket::~Socket()
+	void Socket::CloseSocket()
 	{
 		Disconnect();
 #ifdef _WIN32

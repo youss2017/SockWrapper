@@ -37,8 +37,7 @@ namespace SockWrapper
 
     public:
         Socket(SocketType type);
-        Socket(Socket&& move);
-        ~Socket();
+        void CloseSocket();
         /// <summary>
         /// For more information on SocketInterface go to the enum class definition.
         /// </summary>
@@ -70,8 +69,6 @@ namespace SockWrapper
 
     private:
         Socket() {}
-        Socket(const Socket& copy) = delete;
-        friend class SocketMultiplexing;
 
     private:
         uint64_t mSocket;
