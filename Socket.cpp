@@ -83,7 +83,6 @@ namespace SockWrapper
 		mType = type;
 		mEndpoint.mPort = 0;
 		mEndpoint.mAddress = "0.0.0.0";
-		mAccepted = true;
 		if (mSocket < 0)
 			Socket_ThrowException();
 	}
@@ -92,11 +91,9 @@ namespace SockWrapper
 	{
 		if (this == &move)
 			return;
-		this->mAccepted = move.mAccepted;
 		this->mEndpoint = move.mEndpoint;
 		this->mSocket = move.mSocket;
 		this->mType = move.mType;
-		move.mAccepted = false;
 		move.mSocket = -1;
 	}
 
@@ -361,25 +358,17 @@ namespace SockWrapper
 		uint64_t client = (uint64_t)::accept(mSocket, (sockaddr*)&addrs, &len);
 		Socket s;
 		if (client < 0)
-			s.mAccepted = false;
-		else
-			s.mAccepted = true;
+			Socket_ThrowException();
 		s.mType = SocketType::TCP;
 		s.mSocket = client;
 		s.mEndpoint.mAddress = inet_ntoa(addrs.sin_addr);
 		s.mEndpoint.mPort = ntohs(addrs.sin_port);
-
 		return s;
 	}
 
 	const Endpoint& Socket::GetEndpoint()
 	{
 		return mEndpoint;
-	}
-
-	bool Socket::IsConnectionAccepted()
-	{
-		return mAccepted;
 	}
 
 	bool Socket::IsConnected()
