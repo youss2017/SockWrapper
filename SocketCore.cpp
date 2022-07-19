@@ -3,7 +3,7 @@
 #include <WinSock2.h>
 #endif
 
-namespace SockWrapper {
+namespace sw {
     
     bool Startup() {
         #ifdef _WIN32

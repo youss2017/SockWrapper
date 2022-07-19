@@ -2,7 +2,7 @@
 #include "SockError.hpp"
 #include "Socket.hpp"
 
-namespace SockWrapper {
+namespace sw {
 
 	// Calls WSAStartup on windows
 	bool Startup();

@@ -25,7 +25,7 @@
 typedef int socklen_t;
 #endif
 
-namespace SockWrapper
+namespace sw
 {
 
 	static void Socket_ThrowException(bool invalidArgs = false, const char* detailedError = nullptr)

@@ -2,7 +2,7 @@
 #include <string>
 #include <cstdint>
 
-namespace SockWrapper
+namespace sw
 {
     enum class SocketType
     {

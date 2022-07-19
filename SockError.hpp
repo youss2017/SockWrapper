@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace SockWrapper {
+namespace sw {
 
 	struct SockError {
 		int nErrorCode;
