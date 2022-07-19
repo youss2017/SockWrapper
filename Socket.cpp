@@ -1,4 +1,5 @@
 #include "Socket.hpp"
+#define WIN32_LEAN_AND_MEAN
 #include "SockError.hpp"
 #ifndef _WIN32
 #include <sys/socket.h>
